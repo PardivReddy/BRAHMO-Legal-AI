@@ -177,10 +177,15 @@ export async function generateContent(
 
     try {
       const start = Date.now();
-      const result = await provider.generate(normalized.prompt, {
-        ...options,
-        requestId,
-      });
+      // Prepare call options and normalize model names for specific providers
+      const callOptions = { ...(options ?? {}), requestId } as GenerateOptions;
+
+      // If falling back from Gemini to OpenAI, map Gemini model names to a sensible OpenAI default
+      if (providerName === 'openai' && callOptions.model && /^gemini/i.test(String(callOptions.model))) {
+        callOptions.model = AI_CONFIG.openAIModelChain[0];
+      }
+
+      const result = await provider.generate(normalized.prompt, callOptions);
 
       recordSuccess(providerName);
       recordUsage(providerName, result.totalTokens);
