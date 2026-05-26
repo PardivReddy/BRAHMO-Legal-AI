@@ -138,19 +138,21 @@ export async function POST(request: Request): Promise<Response> {
       },
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unexpected generation error.';
-    const status = message.includes('Invalid JSON')
-      ? 400
-      : message.includes('Gemini is not configured')
-        ? 503
-        : 500;
+    const isInvalidBody = error instanceof Error && error.message.includes('Invalid JSON');
+    const isNotConfigured = error instanceof Error && error.message.includes('Gemini is not configured');
+    const status = isInvalidBody ? 400 : isNotConfigured ? 503 : 500;
+    const details = isInvalidBody
+      ? 'Invalid JSON request body.'
+      : isNotConfigured
+        ? 'AI generation is not configured.'
+        : 'Unexpected generation error.';
 
     console.error('[BRAHMO Generate API]', error);
 
     return Response.json(
       {
         error: 'Generation failed',
-        details: message,
+        details,
       },
       { status }
     );

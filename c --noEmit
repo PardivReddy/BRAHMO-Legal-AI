@@ -1,0 +1,194 @@
+warning: in the working copy of 'src/lib/gemini.ts', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/lib/gemini.ts b/src/lib/gemini.ts[m
+[1mindex 9581b96..a7d415b 100644[m
+[1m--- a/src/lib/gemini.ts[m
+[1m+++ b/src/lib/gemini.ts[m
+[36m@@ -1,172 +1,29 @@[m
+[31m-/**[m
+[31m- * Google Gemini client for BRAHMO Legal AI.[m
+[31m- */[m
+[31m-[m
+[31m-import { GoogleGenerativeAI, type GenerativeModel } from '@google/generative-ai';[m
+[31m-import { estimateTokens, trackUsage } from '@/lib/token-manager';[m
+[32m+[m[32mimport type { AIProviderName, GenerateOptions, GenerateResult } from '@/lib/ai/providers/types';[m
+[32m+[m[32mimport { generateContent as orchestratedGenerateContent, getAIStatus, assertAIConfigured } from '@/lib/ai/orchestration/orchestrator';[m
+ [m
+ export const GEMINI_MODEL_NAME = 'gemini-2.5-flash';[m
+ [m
+[31m-const DEFAULT_TEMPERATURE = 0.35;[m
+[31m-const DEFAULT_MAX_OUTPUT_TOKENS = 8192;[m
+[31m-const MAX_RETRIES = 3;[m
+[31m-const RETRY_BASE_DELAY_MS = 1_000;[m
+[31m-const RETRYABLE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);[m
+[31m-[m
+[31m-export interface GenerateOptions {[m
+[31m-  model?: string;[m
+[31m-  temperature?: number;[m
+[31m-  maxOutputTokens?: number;[m
+[31m-  systemInstruction?: string;[m
+[31m-}[m
+[31m-[m
+[31m-export interface GenerateResult {[m
+[31m-  text: string;[m
+[31m-  model: string;[m
+[31m-  inputTokens: number;[m
+[31m-  outputTokens: number;[m
+[31m-  totalTokens: number;[m
+[31m-}[m
+[31m-[m
+[31m-function getApiKey(): string {[m
+[31m-  const apiKey = process.env.GEMINI_API_KEY ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY;[m
+[31m-[m
+[31m-  if (!apiKey) {[m
+[31m-    throw new Error([m
+[31m-      '[BRAHMO Gemini] Missing GEMINI_API_KEY environment variable. Set it in .env.local.'[m
+[31m-    );[m
+[31m-  }[m
+[31m-[m
+[31m-  return apiKey;[m
+[31m-}[m
+[31m-[m
+[31m-let geminiClient: GoogleGenerativeAI | undefined;[m
+[31m-const modelCache = new Map<string, GenerativeModel>();[m
+[31m-[m
+[31m-export const geminiModel: GenerativeModel | null = (process.env.GEMINI_API_KEY ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY)[m
+[31m-  ? getModel(GEMINI_MODEL_NAME)[m
+[31m-  : null;[m
+[31m-[m
+[31m-export function getGeminiStatus(): { configured: boolean; model: string; envName?: string } {[m
+[31m-  if (process.env.GEMINI_API_KEY) {[m
+[31m-    return { configured: true, model: GEMINI_MODEL_NAME, envName: 'GEMINI_API_KEY' };[m
+[31m-  }[m
+[31m-[m
+[31m-  if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {[m
+[31m-    return { configured: true, model: GEMINI_MODEL_NAME, envName: 'GOOGLE_GENERATIVE_AI_API_KEY' };[m
+[31m-  }[m
+[31m-[m
+[31m-  return { configured: false, model: GEMINI_MODEL_NAME };[m
+[31m-}[m
+[31m-[m
+[31m-export function assertGeminiConfigured(): void {[m
+[31m-  if (!getGeminiStatus().configured) {[m
+[31m-    throw new Error('Gemini is not configured. Add GEMINI_API_KEY to .env.local before generation.');[m
+[31m-  }[m
+[31m-}[m
+[31m-[m
+[31m-export function getModel([m
+[31m-  modelName: string = GEMINI_MODEL_NAME,[m
+[31m-  systemInstruction?: string[m
+[31m-): GenerativeModel {[m
+[31m-  const cacheKey = `${modelName}:${systemInstruction ?? ''}`;[m
+[31m-  const cached = modelCache.get(cacheKey);[m
+[31m-[m
+[31m-  if (cached) {[m
+[31m-    return cached;[m
+[31m-  }[m
+[31m-[m
+[31m-  const model = getClient().getGenerativeModel({[m
+[31m-    model: modelName,[m
+[31m-    ...(systemInstruction ? { systemInstruction } : {}),[m
+[31m-  });[m
+[31m-[m
+[31m-  modelCache.set(cacheKey, model);[m
+[31m-  return model;[m
+[31m-}[m
+[31m-[m
+[31m-function getClient(): GoogleGenerativeAI {[m
+[31m-  if (!geminiClient) {[m
+[31m-    geminiClient = new GoogleGenerativeAI(getApiKey());[m
+[31m-  }[m
+[31m-[m
+[31m-  return geminiClient;[m
+[31m-}[m
+[32m+[m[32mexport { GenerateResult, GenerateOptions };[m
+ [m
+ export async function generateContent([m
+   prompt: string,[m
+   options: GenerateOptions = {}[m
+ ): Promise<GenerateResult> {[m
+[31m-  const {[m
+[31m-    model: modelName = GEMINI_MODEL_NAME,[m
+[31m-    temperature = DEFAULT_TEMPERATURE,[m
+[31m-    maxOutputTokens = DEFAULT_MAX_OUTPUT_TOKENS,[m
+[31m-    systemInstruction,[m
+[31m-  } = options;[m
+[31m-[m
+[31m-  const model = getModel(modelName, systemInstruction);[m
+[31m-  let lastError: Error | undefined;[m
+[31m-[m
+[31m-  for (let attempt = 0; attempt < MAX_RETRIES; attempt += 1) {[m
+[31m-    try {[m
+[31m-      const result = await model.generateContent({[m
+[31m-        contents: [{ role: 'user', parts: [{ text: prompt }] }],[m
+[31m-        generationConfig: {[m
+[31m-          temperature,[m
+[31m-          maxOutputTokens,[m
+[31m-        },[m
+[31m-      });[m
+[31m-[m
+[31m-      const response = result.response;[m
+[31m-      const text = response.text();[m
+[31m-      const usage = response.usageMetadata;[m
+[31m-      const inputTokens = usage?.promptTokenCount ?? estimateTokens(prompt);[m
+[31m-      const outputTokens = usage?.candidatesTokenCount ?? estimateTokens(text);[m
+[31m-      const totalTokens = inputTokens + outputTokens;[m
+[31m-[m
+[31m-      trackUsage(modelName, inputTokens, outputTokens);[m
+[31m-[m
+[31m-      return {[m
+[31m-        text,[m
+[31m-        model: modelName,[m
+[31m-        inputTokens,[m
+[31m-        outputTokens,[m
+[31m-        totalTokens,[m
+[31m-      };[m
+[31m-    } catch (error: unknown) {[m
+[31m-      lastError = error instanceof Error ? error : new Error(String(error));[m
+[31m-[m
+[31m-      if (!isRetryable(error) || attempt === MAX_RETRIES - 1) {[m
+[31m-        break;[m
+[31m-      }[m
+[31m-[m
+[31m-      await sleep(RETRY_BASE_DELAY_MS * 2 ** attempt);[m
+[31m-    }[m
+[31m-  }[m
+[31m-[m
+[31m-  throw new Error([m
+[31m-    `[BRAHMO Gemini] Generation failed for ${modelName}: ${lastError?.message ?? 'unknown error'}`[m
+[31m-  );[m
+[32m+[m[32m  return orchestratedGenerateContent(prompt, options);[m
+ }[m
+ [m
+[31m-function isRetryable(error: unknown): boolean {[m
+[31m-  if (!(error instanceof Error)) {[m
+[31m-    return false;[m
+[31m-  }[m
+[31m-[m
+[31m-  const message = error.message.toLowerCase();[m
+[31m-[m
+[31m-  if (message.includes('rate limit') || message.includes('quota')) {[m
+[31m-    return true;[m
+[31m-  }[m
+[31m-[m
+[31m-  return Array.from(RETRYABLE_STATUS_CODES).some((statusCode) =>[m
+[31m-    message.includes(String(statusCode))[m
+[31m-  );[m
+[32m+[m[32mexport function getGeminiStatus(): {[m
+[32m+[m[32m  configured: boolean;[m
+[32m+[m[32m  providers: Record<AIProviderName, boolean>;[m
+[32m+[m[32m  defaults: {[m
+[32m+[m[32m    geminiModelChain: readonly string[];[m
+[32m+[m[32m    openAIModelChain: readonly string[];[m
+[32m+[m[32m    claudeModelChain: readonly string[];[m
+[32m+[m[32m  };[m
+[32m+[m[32m} {[m
+[32m+[m[32m  return getAIStatus();[m
+ }[m
+ [m
+[31m-function sleep(ms: number): Promise<void> {[m
+[31m-  return new Promise((resolve) => {[m
+[31m-    setTimeout(resolve, ms);[m
+[31m-  });[m
+[32m+[m[32mexport function assertGeminiConfigured(): void {[m
+[32m+[m[32m  assertAIConfigured();[m
+ }[m
