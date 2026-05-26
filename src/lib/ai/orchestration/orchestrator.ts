@@ -25,10 +25,21 @@ const providerRegistry: Record<AIProviderName, AIProvider> = {
   local: localProvider,
 };
 
-// Lazily-wrapped providers to avoid circular init issues during module evaluation
-const providerWrapperCache = new Map<AIProviderName, AIProvider>();
+const globalContainer = globalThis as typeof globalThis & {
+  __BRAHMO_AI_PROVIDER_METRICS__?: Map<AIProviderName, ProviderMetrics>;
+  __BRAHMO_AI_PROVIDER_WRAPPER_CACHE__?: Map<AIProviderName, AIProvider>;
+};
 
-const providerMetrics = new Map<AIProviderName, ProviderMetrics>();
+const providerWrapperCache =
+  globalContainer.__BRAHMO_AI_PROVIDER_WRAPPER_CACHE__ ??
+  new Map<AIProviderName, AIProvider>();
+
+const providerMetrics =
+  globalContainer.__BRAHMO_AI_PROVIDER_METRICS__ ??
+  new Map<AIProviderName, ProviderMetrics>();
+
+globalContainer.__BRAHMO_AI_PROVIDER_WRAPPER_CACHE__ = providerWrapperCache;
+globalContainer.__BRAHMO_AI_PROVIDER_METRICS__ = providerMetrics;
 
 function initializeProviderMetrics(provider: AIProviderName): ProviderMetrics {
   const metrics: ProviderMetrics = {
