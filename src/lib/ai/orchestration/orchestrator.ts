@@ -154,6 +154,8 @@ export async function generateContent(
   const orderedProviders = options.preferredProviders ?? PROVIDER_FALLBACK_SEQUENCE;
   let lastError: AIProviderError | null = null;
 
+  let fallbackTriggered = false;
+
   for (const providerName of orderedProviders) {
     const provider = providerWrapperCache.get(providerName) ?? createProviderWrapper(providerRegistry[providerName]);
     providerWrapperCache.set(providerName, provider);
@@ -188,7 +190,7 @@ export async function generateContent(
         model: result.model,
         latencyMs: Date.now() - start,
         retries: 0,
-        fallbackUsed: false,
+        fallbackUsed: fallbackTriggered,
         tokenUsage: {
           input: result.inputTokens,
           output: result.outputTokens,
@@ -212,20 +214,25 @@ export async function generateContent(
       }
 
       recordFailure(providerName);
+      const shouldFallback = shouldFallbackOnError(lastError);
       logAIMetric({
         provider: providerName,
         model: options.model ?? 'unknown',
         latencyMs: 0,
         retries: 0,
-        fallbackUsed: shouldFallbackOnError(lastError),
+        fallbackUsed: shouldFallback,
         errorCode: lastError.code,
         degraded: false,
         requestId,
       });
 
-      if (!shouldFallbackOnError(lastError) || providerName === 'local') {
+      if (!shouldFallback || providerName === 'local') {
         break;
       }
+
+      fallbackTriggered = true;
+      const fallbackMetrics = providerMetrics.get(providerName) ?? initializeProviderMetrics(providerName);
+      fallbackMetrics.requests.fallbacks++;
 
       logger.info('Falling back to next provider', {
         provider: providerName,

@@ -140,5 +140,5 @@ export function isRetryableError(code: AIErrorCode): boolean {
 }
 
 export function shouldFallbackToAnotherProvider(code: AIErrorCode): boolean {
-  return code === 'DAILY_QUOTA' || code === 'INVALID_KEY' || code === 'SERVER' || code === 'CONTEXT_LIMIT';
+  return code !== 'SAFETY';
 }
