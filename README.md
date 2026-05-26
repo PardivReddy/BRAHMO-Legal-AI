@@ -1,9 +1,4 @@
 # BRAHMO Legal AI
-
-<p align="center">
-  <img src="assets/brahmo-architecture.png" alt="BRAHMO Architecture" width="1400"/>
-</p>
-
 <h1 align="center">
 BRAHMO — Legal AI Orchestration Platform
 </h1>
