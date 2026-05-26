@@ -1,27 +1,45 @@
 # BRAHMO Legal AI
 
-> Enterprise-grade Legal AI Orchestration Platform with Retrieval-Augmented Generation (RAG), Live Indian Kanoon Research, Knowledge Injection, and Multi-Level Legal Intelligence Pipelines.
+<p align="center">
+  <img src="assets/brahmo-architecture.png" alt="BRAHMO Architecture" width="1400"/>
+</p>
+
+<h1 align="center">
+BRAHMO — Legal AI Orchestration Platform
+</h1>
+
+<p align="center">
+Enterprise-grade Legal AI system with Retrieval-Augmented Generation (RAG), Knowledge Injection, Indian Kanoon Research, and Multi-Level Legal Intelligence Pipelines.
+</p>
+
+---
+
+<p align="center">
+
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-Blue?style=for-the-badge&logo=typescript)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38BDF8?style=for-the-badge&logo=tailwindcss)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase)
+![Gemini](https://img.shields.io/badge/Gemini-AI-orange?style=for-the-badge)
+![RAG](https://img.shields.io/badge/RAG-Legal%20AI-red?style=for-the-badge)
+
+</p>
 
 ---
 
 # Overview
 
-BRAHMO Legal AI is an advanced legal drafting and orchestration platform designed to demonstrate how AI systems can progressively improve legal reasoning through:
+BRAHMO Legal AI is a production-oriented Legal AI orchestration platform designed to demonstrate how AI systems progressively improve legal reasoning through:
 
-- template orchestration
-- knowledge graph injection
-- live legal precedent retrieval
-- contextual grounding
-- deterministic evaluation
-- trust-aware telemetry
+- Retrieval-Augmented Generation (RAG)
+- Knowledge Injection
+- Template Orchestration
+- Legal Authority Grounding
+- Deterministic Evaluation
+- Context-Aware Prompt Engineering
+- Multi-Level Legal Intelligence
 
-The platform compares **three levels of legal intelligence** side-by-side:
-
-| Level | Description |
-|---|---|
-| **Level 1** | Generic LLM drafting |
-| **Level 2** | Template-guided legal drafting |
-| **Level 3** | Knowledge + precedent-grounded orchestration |
+The system compares progressively intelligent AI drafting pipelines side-by-side to showcase how retrieval, templates, and contextual knowledge improve legal output quality.
 
 ---
 
@@ -30,63 +48,66 @@ The platform compares **three levels of legal intelligence** side-by-side:
 ## Multi-Level Legal Intelligence
 - 3-level orchestration architecture
 - side-by-side intelligence comparison
-- deterministic scoring system
+- deterministic evaluation pipeline
 - trust-aware telemetry
 
+---
+
 ## Retrieval-Augmented Generation (RAG)
-- live Indian Kanoon precedent retrieval
+- live Indian Kanoon retrieval
 - legal authority extraction
-- knowledge graph injection
+- precedent injection
 - contextual grounding
 
-## Legal Workflow Orchestration
-- criminal law workflows
-- corporate law workflows
+---
+
+## Legal Workflow Automation
 - anticipatory bail drafting
 - NDA review
 - arbitration clause generation
 - board resolution drafting
-
-## Knowledge Injection Engine
-- constraint injection
-- anti-pattern injection
-- strategic guidance injection
-- decision intelligence retrieval
-
-## Trust & Evaluation Layer
-- grounding score
-- retrieval score
-- reasoning score
-- structural score
-- deterministic intelligence index
-
-## Premium UI/UX
-- monochrome enterprise interface
-- smooth transitions and animations
-- responsive dashboard layout
-- live orchestration telemetry
+- criminal law workflows
+- corporate law workflows
 
 ---
 
-# Architecture
+## Knowledge Injection Engine
+- strategic guidance injection
+- legal constraint injection
+- anti-pattern detection
+- contextual intelligence retrieval
 
-## System Architecture
+---
+
+## Trust & Evaluation Layer
+- grounding score
+- reasoning score
+- structural score
+- retrieval score
+- deterministic intelligence index
+
+---
+
+## Enterprise UI/UX
+- monochrome enterprise design
+- orchestration telemetry
+- responsive dashboard
+- animated transitions
+- live comparison interface
+
+---
 
 # Architecture
 
 ## System Architecture
 
 <p align="center">
-  <img src="./assets/brahmo-architecture.png" alt="BRAHMO Architecture" width="1200"/>
+  <img src="assets/brahmo-architecture.png" alt="BRAHMO Architecture" width="1400"/>
 </p>
 
 ---
 
-## High-Level Pipeline
-
----
-
-## High-Level Pipeline
+# High-Level Pipeline
 
 ```text
 User Query
@@ -114,7 +135,7 @@ Final Response Rendering
 
 ---
 
-# Tech Stack
+# Technology Stack
 
 | Layer | Technology |
 |---|---|
@@ -129,44 +150,48 @@ Final Response Rendering
 
 ---
 
-# Core Components
+# Core System Components
 
-## Frontend
-- Query input dashboard
+## Frontend Layer
+- query dashboard
 - 3-level comparison interface
 - injected knowledge visualization
-- Indian Kanoon research panel
-- telemetry & scoring dashboard
-
-## Backend API Layer
-- query classification
-- template orchestration
-- knowledge injection
-- precedent retrieval
-- output evaluation
-
-## Supabase Storage
-- legal templates
-- knowledge nodes
-- section mappings
-- court formats
-- IK retrieval cache
-- matter storage
+- telemetry & scoring panels
+- live precedent viewer
 
 ---
 
-# Database Schema
+## Backend API Layer
+- query classification
+- orchestration engine
+- template selection
+- knowledge injection
+- precedent retrieval
+- response normalization
+- deterministic evaluation
 
-## Tables
+---
+
+## Retrieval & Knowledge Layer
+- Indian Kanoon integration
+- authority extraction
+- contextual grounding
+- legal knowledge graph
+- strategic reasoning retrieval
+
+---
+
+## Supabase Storage Layer
 
 | Table | Purpose |
 |---|---|
 | `legal_templates` | Legal drafting templates |
-| `knowledge_nodes` | Strategic legal knowledge graph |
+| `knowledge_nodes` | Strategic legal intelligence |
 | `section_mappings` | IPC → BNS normalization |
 | `court_formats` | Court-specific formatting |
-| `ik_case_cache` | Indian Kanoon caching |
-| `matters` | Client/matter management |
+| `ik_case_cache` | Indian Kanoon cache |
+| `matters` | Matter storage |
+| `audit_logs` | Telemetry & orchestration tracing |
 
 ---
 
@@ -175,39 +200,59 @@ Final Response Rendering
 ## Level 1 — Generic AI
 - raw LLM generation
 - no templates
-- no knowledge
 - no retrieval
+- no contextual grounding
+
+### Characteristics
+- weak reasoning
+- inconsistent formatting
+- low legal reliability
+
+---
 
 ## Level 2 — Template Intelligence
-- legal template orchestration
+- template-guided orchestration
 - structured drafting
-- better formatting
+- improved formatting
 - moderate legal reasoning
+
+### Enhancements
+- legal sectioning
+- formatting consistency
+- reduced hallucinations
+
+---
 
 ## Level 3 — Grounded Legal Intelligence
 - live precedent retrieval
 - knowledge graph injection
 - strategic legal reasoning
 - contextual grounding
-- trust-aware generation
+- trust-aware orchestration
+
+### Advanced Capabilities
+- authority-backed drafting
+- contextual legal intelligence
+- explainable orchestration
+- deterministic evaluation
 
 ---
 
 # Indian Kanoon Integration
 
-The system integrates live Indian Kanoon retrieval to:
+BRAHMO integrates live Indian Kanoon retrieval to:
 - search precedents
 - extract citations
-- retrieve courts
+- retrieve court metadata
 - inject relevant legal principles
-- improve grounding quality
+- improve contextual grounding
 
-Features:
+## Features
 - retrieval caching
 - timeout handling
 - graceful fallback orchestration
+- citation parsing
 - authority separation
-- precedent parsing
 
 ---
 
@@ -215,15 +260,16 @@ Features:
 
 BRAHMO uses deterministic evaluation instead of arbitrary AI scoring.
 
-## Metrics
+## Evaluation Metrics
 
 | Metric | Description |
 |---|---|
 | Structure | Formatting quality |
 | Reasoning | Legal reasoning sophistication |
 | Grounding | Retrieval & authority grounding |
-| Retrieval | Precedent & knowledge usage |
+| Retrieval | Precedent utilization |
 | Citation | Citation relevance |
+| Intelligence | Overall orchestration quality |
 
 ---
 
@@ -231,38 +277,50 @@ BRAHMO uses deterministic evaluation instead of arbitrary AI scoring.
 
 ## Main Dashboard
 
-(Add screenshot)
+<p align="center">
+  <img src="assets/dashboard.png" width="1300"/>
+</p>
 
 ---
 
-## Level Comparison
+## 3-Level Comparison
 
-(Add screenshot)
-
----
-
-## Live Indian Kanoon Retrieval
-
-(Add screenshot)
+<p align="center">
+  <img src="assets/comparison.png" width="1300"/>
+</p>
 
 ---
 
-## Intelligence Telemetry
+## Indian Kanoon Retrieval
 
-(Add screenshot)
+<p align="center">
+  <img src="assets/kanoon.png" width="1300"/>
+</p>
 
 ---
 
-# Demo Queries
+## Telemetry Dashboard
+
+<p align="center">
+  <img src="assets/telemetry.png" width="1300"/>
+</p>
+
+---
+
+# Example Queries
 
 ## Criminal Law
 
 ### Anticipatory Bail
+
 ```text
 Draft anticipatory bail for a director accused in an economic offence where arrest is apprehended but documents are already seized.
 ```
 
+---
+
 ### White Collar Offence
+
 ```text
 Draft bail arguments in a money laundering investigation involving alleged shell companies.
 ```
@@ -272,16 +330,23 @@ Draft bail arguments in a money laundering investigation involving alleged shell
 ## Corporate Law
 
 ### NDA Review
+
 ```text
 Review and tighten a mutual NDA for a SaaS vendor engagement.
 ```
 
+---
+
 ### Arbitration Clause
+
 ```text
 Draft an arbitration clause with seat Mumbai for a shareholders agreement.
 ```
 
+---
+
 ### Board Resolution
+
 ```text
 Draft a board resolution approving appointment of an additional director.
 ```
@@ -290,16 +355,16 @@ Draft a board resolution approving appointment of an additional director.
 
 # Local Development Setup
 
-## 1. Clone Repository
+## Clone Repository
 
 ```bash
-git clone <your-repo-url>
+git clone <repository-url>
 cd brahmo-legal-ai
 ```
 
 ---
 
-## 2. Install Dependencies
+## Install Dependencies
 
 ```bash
 npm install
@@ -307,7 +372,7 @@ npm install
 
 ---
 
-## 3. Configure Environment Variables
+## Configure Environment Variables
 
 Create:
 
@@ -315,7 +380,7 @@ Create:
 .env.local
 ```
 
-Using:
+Copy:
 
 ```bash
 cp .env.example .env.local
@@ -323,7 +388,7 @@ cp .env.example .env.local
 
 ---
 
-## 4. Add Environment Variables
+## Add API Keys
 
 ```env
 # Supabase
@@ -343,33 +408,28 @@ INDIAN_KANOON_API_KEY=
 
 # Supabase Setup
 
-## 1. Create Supabase Project
-
+## Create Project
 Create a new project at:
 
+```text
 https://supabase.com/
+```
 
 ---
 
-## 2. Run Schema
+## Run Schema
 
-Execute:
 ```sql
 schema.sql
 ```
 
-inside Supabase SQL Editor.
-
 ---
 
-## 3. Run Seed
+## Run Seed
 
-Execute:
 ```sql
 seed.sql
 ```
-
-inside Supabase SQL Editor.
 
 ---
 
@@ -381,15 +441,13 @@ npm run dev
 
 Open:
 
-```bash
+```text
 http://localhost:3000
 ```
 
 ---
 
 # Validation
-
-Run:
 
 ```bash
 npm run lint
@@ -399,9 +457,39 @@ npm run build
 
 ---
 
-# Deployment (Planned)
+# Engineering Highlights
 
-Planned production deployment stack:
+## Retrieval-Augmented Generation
+- contextual grounding
+- precedent injection
+- authority retrieval
+
+---
+
+## Knowledge Graph Orchestration
+- strategic guidance retrieval
+- anti-pattern detection
+- legal intelligence injection
+
+---
+
+## Trust-Aware UX
+- provenance separation
+- retrieval transparency
+- deterministic telemetry
+
+---
+
+## Production Engineering
+- modular architecture
+- TypeScript safety
+- caching layer
+- graceful fallback handling
+- token-aware orchestration
+
+---
+
+# Deployment Architecture (Planned)
 
 | Layer | Service |
 |---|---|
@@ -413,42 +501,17 @@ Planned production deployment stack:
 
 ---
 
-# Engineering Highlights
-
-## Retrieval-Augmented Generation
-- live legal research
-- contextual grounding
-- precedent injection
-
-## Knowledge Graph Orchestration
-- strategic guidance retrieval
-- anti-pattern detection
-- constraint injection
-
-## Trust-Aware UX
-- provenance separation
-- retrieval transparency
-- deterministic telemetry
-
-## Production Engineering
-- modular architecture
-- TypeScript safety
-- caching layer
-- graceful fallback handling
-
----
-
-# Final Validation Status
+# Validation Status
 
 | Validation | Status |
 |---|---|
 | ESLint | ✅ |
 | TypeScript | ✅ |
 | Production Build | ✅ |
-| Retrieval Pipeline | ✅ |
 | Supabase Integration | ✅ |
 | Gemini Integration | ✅ |
-| Indian Kanoon Integration | ✅ |
+| Indian Kanoon Retrieval | ✅ |
+| RAG Pipeline | ✅ |
 
 ---
 
@@ -457,22 +520,21 @@ Planned production deployment stack:
 - PDF export
 - DOCX generation
 - authentication layer
-- matter persistence
-- advanced legal analytics
-- vector embeddings
 - semantic retrieval
+- vector embeddings
+- advanced legal analytics
 - multi-jurisdiction support
-
----
-
-# License
-
-For assessment/demo purposes only.
 
 ---
 
 # Author
 
-**Pardiv Reddy**
+## Pardiv Reddy
 
-AI Engineer | Full Stack Developer | Legal AI Systems
+AI Engineer • Full Stack Developer • Legal AI Systems
+
+---
+
+# License
+
+Assessment / Demonstration Purpose Only.
