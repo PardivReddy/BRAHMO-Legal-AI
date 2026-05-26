@@ -72,7 +72,7 @@ The platform compares **three levels of legal intelligence** side-by-side:
 
 ## System Architecture
 
-![BRAHMO Architecture](./assets/brahmo-architecture.png)
+![BRAHMO Architecture](D:\brahmo-legal-ai\assests)
 
 ---
 
