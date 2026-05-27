@@ -49,6 +49,11 @@ export interface GenerateResponse {
       error?: string;
       warning?: string;
     };
+    sectionNormalization?: {
+      level1: number;
+      level2: number;
+      level3: number;
+    };
   };
   tokenUsage: {
     level1: DraftTokenUsage;

@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import IKResearchPanel from '@/components/IKResearchPanel';
 import IntegrationStatusPanel from '@/components/IntegrationStatusPanel';
 import KnowledgePanel from '@/components/KnowledgePanel';
+import GroundingValidationPanel from '@/components/GroundingValidationPanel';
 import PremiumHero from '@/components/PremiumHero';
 import PremiumQueryInput from '@/components/PremiumQueryInput';
 import ThreeLevelComparison, { type DraftLevel } from '@/components/ThreeLevelComparison';
@@ -107,6 +108,18 @@ export default function Home() {
     ];
   }, [result]);
 
+  const groundingData = useMemo(() => ({
+    precedentCount: result?.knowledge.ikResearch?.results.length ?? 0,
+    knowledgeNodeCount: result?.knowledge.nodes?.length ?? 0,
+    selectedTemplate: result?.template.title ?? result?.template.id ?? null,
+    templateOrchestration: result?.pipelineSignals.templateOrchestration ?? false,
+    normalizationCount: result?.knowledge.sectionNormalization?.level3 ?? null,
+    providerUsed: result?.providerUsed ?? null,
+    liveRetrieval: result?.pipelineSignals.liveRetrieval,
+    authorityNames: result?.intelligence.liveAuthorities ?? [],
+    knowledgeAuthorities: result?.intelligence.knowledgeAuthorities ?? [],
+  }), [result]);
+
   async function handleGenerate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -192,11 +205,24 @@ export default function Home() {
 
               <ThreeLevelComparison levels={levels} />
 
-              <KnowledgePanel
-                nodes={result.knowledge.nodes ?? []}
-                error={result.knowledge.error}
-                tokenUsage={result.knowledge.token_usage ?? null}
-              />
+              <section className="grid gap-5 xl:grid-cols-[1.3fr_0.7fr]">
+                <KnowledgePanel
+                  nodes={result.knowledge.nodes ?? []}
+                  error={result.knowledge.error}
+                  tokenUsage={result.knowledge.token_usage ?? null}
+                />
+                <GroundingValidationPanel
+                  precedentCount={groundingData.precedentCount}
+                  knowledgeNodeCount={groundingData.knowledgeNodeCount}
+                  selectedTemplate={groundingData.selectedTemplate}
+                  templateOrchestration={groundingData.templateOrchestration}
+                  normalizationCount={groundingData.normalizationCount}
+                  providerUsed={groundingData.providerUsed}
+                  liveRetrieval={groundingData.liveRetrieval}
+                  authorityNames={groundingData.authorityNames}
+                  knowledgeAuthorities={groundingData.knowledgeAuthorities}
+                />
+              </section>
             </motion.div>
           ) : !isLoading ? (
             <EmptyState key="empty" levels={levels} />
