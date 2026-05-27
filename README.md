@@ -277,14 +277,6 @@ BRAHMO uses deterministic evaluation instead of arbitrary AI scoring.
 </p>
 
 ---
-## Telemetry Dashboard
-
-<p align="center">
-  <img src="assets/telemetry.png" width="1300"/>
-</p>
-
----
-
 ## 3-Level Comparison
 
 <p align="center">
