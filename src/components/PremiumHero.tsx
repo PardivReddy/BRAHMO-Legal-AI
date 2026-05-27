@@ -2,6 +2,7 @@
 
 import { memo } from 'react';
 import { motion } from 'framer-motion';
+import ParticlesBackground from '@/components/ParticlesBackground';
 import { EASE_PREMIUM, fadeUp, fadeUpTransition } from '@/lib/motion';
 import type { IntegrationStatus } from '@/types/generation';
 
@@ -15,8 +16,10 @@ function PremiumHero({ status }: PremiumHeroProps) {
     : false;
 
   return (
-    <header className="surface rounded-2xl px-6 py-8 sm:px-8 lg:px-10">
-      <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+    <header className="relative overflow-hidden surface rounded-2xl px-6 py-8 sm:px-8 lg:px-10">
+      <ParticlesBackground className="pointer-events-none opacity-30" />
+      <div className="absolute inset-x-0 top-0 h-full bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.04),_transparent_24%)] opacity-40 pointer-events-none" />
+      <div className="relative grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
         <motion.div {...fadeUp} transition={fadeUpTransition}>
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <StatusIndicator ready={ready} label={ready ? 'Systems ready' : 'Checking services'} />
@@ -25,10 +28,10 @@ function PremiumHero({ status }: PremiumHeroProps) {
           </div>
 
           <p className="section-label">BRAHMO Legal AI</p>
-          <h1 className="mt-3 max-w-4xl text-3xl font-semibold tracking-[-0.03em] text-[#f5f5f5] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.12]">
+          <h1 className="mt-3 max-w-4xl text-4xl font-semibold tracking-[-0.035em] text-[#f5f5f5] sm:text-5xl lg:text-[3.2rem] lg:leading-[1.02]">
             Legal drafting pipeline
           </h1>
-          <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[#a1a1aa]">
+          <p className="mt-4 max-w-2xl text-base leading-8 text-[#a1a1aa] sm:text-[17px]">
             Run one instruction through three orchestration depths. Metrics and authorities are derived from pipeline metadata.
           </p>
         </motion.div>

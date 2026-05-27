@@ -62,10 +62,10 @@ const DraftCard = memo(function DraftCard({ level, index }: { level: DraftLevel;
     <motion.article
       variants={staggerItem}
       layout="position"
-      className={`flex min-h-[600px] flex-col overflow-hidden rounded-2xl border transition-colors duration-200 ${
+      className={`flex min-h-[600px] flex-col overflow-hidden rounded-2xl border transition duration-300 ease-[var(--ease-premium)] ${
         isStrong
-          ? 'border-[rgba(255,255,255,0.14)] bg-[#111214] shadow-[0_8px_40px_rgba(0,0,0,0.45)] xl:-mt-2 xl:min-h-[660px]'
-          : 'border-[rgba(255,255,255,0.08)] bg-[#0b0b0c]'
+          ? 'border-[rgba(255,255,255,0.14)] bg-[#111214] shadow-[0_8px_40px_rgba(0,0,0,0.45)] xl:-mt-2 xl:min-h-[660px] hover:-translate-y-0.5 hover:border-[rgba(255,255,255,0.18)]'
+          : 'border-[rgba(255,255,255,0.08)] bg-[#0b0b0c] hover:-translate-y-0.5 hover:border-[rgba(255,255,255,0.12)]'
       }`}
     >
       <div
