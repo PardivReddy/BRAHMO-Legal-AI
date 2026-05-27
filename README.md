@@ -534,7 +534,3 @@ npm run build
 AI Engineer • Full Stack Developer • Legal AI Systems
 
 ---
-
-# License
-
-Assessment / Demonstration Purpose Only.
