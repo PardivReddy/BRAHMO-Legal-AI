@@ -277,11 +277,25 @@ BRAHMO uses deterministic evaluation instead of arbitrary AI scoring.
 </p>
 
 ---
+## Telemetry Dashboard
+
+<p align="center">
+  <img src="assets/telemetry.png" width="1300"/>
+</p>
+
+---
 
 ## 3-Level Comparison
 
 <p align="center">
-  <img src="assets/comparison.png" width="1300"/>
+  <img src="assets/Three_lvl_comparision.png" width="1300"/>
+</p>
+
+---
+## Template & Classification
+
+<p align="center">
+  <img src="assets/temp_classification.png" width="1300"/>
 </p>
 
 ---
@@ -294,14 +308,13 @@ BRAHMO uses deterministic evaluation instead of arbitrary AI scoring.
 
 ---
 
-## Telemetry Dashboard
+## Knowledge Graph
 
 <p align="center">
-  <img src="assets/telemetry.png" width="1300"/>
+  <img src="assets/knowledge_graph.png" width="1300"/>
 </p>
 
 ---
-
 # Example Queries
 
 ## Criminal Law
