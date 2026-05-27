@@ -1,7 +1,7 @@
 import type { AIProviderName } from '@/lib/ai/providers/types';
 import { AIProviderError, AIErrorCode, shouldFallbackToAnotherProvider } from '@/lib/ai/utils/errors';
 
-export const PROVIDER_FALLBACK_SEQUENCE: AIProviderName[] = ['gemini', 'openai', 'claude', 'local'];
+export const PROVIDER_FALLBACK_SEQUENCE: AIProviderName[] = ['gemini', 'openai', 'groq', 'claude', 'local'];
 
 export function getNextProvider(current: AIProviderName): AIProviderName | null {
   const index = PROVIDER_FALLBACK_SEQUENCE.indexOf(current);

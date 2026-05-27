@@ -221,6 +221,8 @@ export interface AIGenerationResponse {
     output: number;
     total: number;
   };
+  provider?: string | null;
+  fallbackUsed?: boolean;
   quality_score?: QualityScore;
   generated_at: string;
 }

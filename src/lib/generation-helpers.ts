@@ -83,5 +83,7 @@ function toGenerationResponse(
       total: result.inputTokens + result.outputTokens,
     },
     generated_at: new Date().toISOString(),
+    provider: result.provider,
+    fallbackUsed: result.fallbackUsed,
   };
 }

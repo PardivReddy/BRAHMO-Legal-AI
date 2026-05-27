@@ -121,6 +121,10 @@ export function classifyOpenAIError(error: unknown): AIErrorCode {
   return 'UNKNOWN';
 }
 
+export function classifyGroqError(error: unknown): AIErrorCode {
+  return classifyOpenAIError(error);
+}
+
 export function classifyClaudeError(error: unknown): AIErrorCode {
   const message = extractErrorMessage(error).toLowerCase();
   const statusCode = normalizeStatusCode(error);

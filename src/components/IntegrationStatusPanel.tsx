@@ -8,9 +8,25 @@ import type { IntegrationStatus } from '@/types/generation';
 interface IntegrationStatusPanelProps {
   status: IntegrationStatus | null;
   isLoading: boolean;
+  providerUsed?: string | null;
+  providerFallback?: boolean;
 }
 
-function IntegrationStatusPanel({ status, isLoading }: IntegrationStatusPanelProps) {
+function IntegrationStatusPanel({ status, isLoading, providerUsed, providerFallback }: IntegrationStatusPanelProps) {
+  const providerStatusItems = status?.gemini.providers
+    ? (Object.entries(status.gemini.providers) as [string, boolean][])
+        .filter(([name]) => ['gemini', 'openai', 'groq'].includes(name))
+        .map(([provider, ok]) => ({
+          label: provider.charAt(0).toUpperCase() + provider.slice(1),
+          ok,
+          meta: ok ? 'available' : 'unavailable',
+        }))
+    : [];
+
+  const providerBadge = providerUsed
+    ? `${providerUsed}${providerFallback ? ' (Fallback)' : ''}`
+    : null;
+
   return (
     <motion.section {...fadeUp} transition={{ ...fadeUpTransition, delay: 0.1 }} className="surface rounded-2xl p-5">
       <div className="mb-5 flex items-center justify-between">
@@ -22,6 +38,12 @@ function IntegrationStatusPanel({ status, isLoading }: IntegrationStatusPanelPro
           env
         </span>
       </div>
+
+      {providerBadge ? (
+        <div className="mb-4 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[#050505]/80 px-3 py-2 text-sm text-[#f5f5f5]">
+          <span className="font-medium">Provider used:</span> {providerBadge}
+        </div>
+      ) : null}
 
       {isLoading ? (
         <div className="space-y-2">
@@ -39,6 +61,9 @@ function IntegrationStatusPanel({ status, isLoading }: IntegrationStatusPanelPro
               meta: item.fallback ? item.fallback : item.required ? 'required' : 'opt',
             }))}
           />
+          {providerStatusItems.length ? (
+            <StatusGroup title="Providers" items={providerStatusItems} />
+          ) : null}
           <StatusGroup
             title="Data plane"
             items={(status?.supabase.tables ?? []).map((item) => ({

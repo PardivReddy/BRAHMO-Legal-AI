@@ -21,6 +21,7 @@ const state: DailyQuotaState = {
   providers: {
     gemini: { requests: 0, tokens: 0 },
     openai: { requests: 0, tokens: 0 },
+    groq: { requests: 0, tokens: 0 },
     claude: { requests: 0, tokens: 0 },
     local: { requests: 0, tokens: 0 },
   },

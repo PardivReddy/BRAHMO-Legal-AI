@@ -3,10 +3,11 @@ import { logAIMetric } from '@/lib/ai/utils/metrics';
 import { canUseProvider, getQuotaStatus, recordUsage } from '@/lib/ai/orchestration/quota-manager';
 import { isCircuitOpen, recordFailure, recordSuccess } from '@/lib/ai/orchestration/circuit-breaker';
 import { ensurePromptWithinLimit } from '@/lib/ai/orchestration/context-manager';
-import { shouldFallbackOnError, PROVIDER_FALLBACK_SEQUENCE } from '@/lib/ai/orchestration/fallback';
+import { shouldFallbackOnError, PROVIDER_FALLBACK_SEQUENCE, getNextProvider } from '@/lib/ai/orchestration/fallback';
 import { AIProviderError } from '@/lib/ai/utils/errors';
 import { geminiProvider } from '@/lib/ai/providers/gemini';
 import { openAIProvider } from '@/lib/ai/providers/openai';
+import { groqProvider } from '@/lib/ai/providers/groq';
 import { claudeProvider } from '@/lib/ai/providers/claude';
 import { localProvider } from '@/lib/ai/providers/local';
 import type {
@@ -21,6 +22,7 @@ import { AI_CONFIG, getProviderEnvStatus } from '@/lib/ai/utils/env';
 const providerRegistry: Record<AIProviderName, AIProvider> = {
   gemini: geminiProvider,
   openai: openAIProvider,
+  groq: groqProvider,
   claude: claudeProvider,
   local: localProvider,
 };
@@ -55,7 +57,7 @@ export function getActiveProviderMetrics(): Record<AIProviderName, ProviderMetri
   const result: Partial<Record<AIProviderName, ProviderMetrics>> = {};
 
   // Initialize metrics for all known providers
-  (['gemini', 'openai', 'claude', 'local'] as AIProviderName[]).forEach(provider => {
+  (['gemini', 'openai', 'groq', 'claude', 'local'] as AIProviderName[]).forEach(provider => {
     result[provider] = providerMetrics.get(provider) || initializeProviderMetrics(provider);
   });
   return result as Record<AIProviderName, ProviderMetrics>;
@@ -83,6 +85,7 @@ export function getAIStatus() {
   const defaults = {
     geminiModelChain: ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'],
     openAIModelChain: AI_CONFIG.openAIModelChain,
+    groqModelChain: ['llama-3.3-70b-versatile'] as const,
     claudeModelChain: AI_CONFIG.claudeModelChain,
   };
 
@@ -106,7 +109,7 @@ export function getAIStatus() {
 
 export function assertAIConfigured(): void {
   if (!getAIStatus().configured) {
-    throw new Error('No AI provider is configured. Add GEMINI_API_KEY, OPENAI_API_KEY, or CLAUDE_API_KEY.');
+    throw new Error('No AI provider is configured. Add GEMINI_API_KEY, OPENAI_API_KEY, GROQ_API_KEY, or CLAUDE_API_KEY.');
   }
 }
 
@@ -156,36 +159,53 @@ export async function generateContent(
 
   let fallbackTriggered = false;
 
+  const providerStatus = getAIStatus();
+  console.log('AVAILABLE PROVIDERS:', providerStatus.availableProviders);
+  console.log('CONFIGURED PROVIDERS:', providerStatus.configuredProviders);
+  console.log('REQUEST ID:', requestId);
+  console.log('GROQ AVAILABLE:', !!process.env.GROQ_API_KEY);
+
   for (const providerName of orderedProviders) {
     const provider = providerWrapperCache.get(providerName) ?? createProviderWrapper(providerRegistry[providerName]);
     providerWrapperCache.set(providerName, provider);
 
     if (!provider.isAvailable()) {
+      console.log('SKIPPING PROVIDER (unavailable):', providerName, 'requestId:', requestId);
       logger.debug('Provider skipped because unavailable', { provider: providerName, requestId });
       continue;
     }
 
     if (isCircuitOpen(providerName)) {
+      console.log('SKIPPING PROVIDER (circuit open):', providerName, 'requestId:', requestId);
       logger.warn('Provider circuit open, skipping provider', { provider: providerName, requestId });
       continue;
     }
 
     if (!canUseProvider(providerName)) {
+      console.log('SKIPPING PROVIDER (quota exhausted):', providerName, 'requestId:', requestId);
       logger.warn('Provider quota exhausted, skipping provider', { provider: providerName, requestId });
       continue;
     }
 
     try {
       const start = Date.now();
-      // Prepare call options and normalize model names for specific providers
       const callOptions = { ...(options ?? {}), requestId } as GenerateOptions;
 
-      // If falling back from Gemini to OpenAI, map Gemini model names to a sensible OpenAI default
       if (providerName === 'openai' && callOptions.model && /^gemini/i.test(String(callOptions.model))) {
         callOptions.model = AI_CONFIG.openAIModelChain[0];
       }
 
+      if (providerName === 'groq' && callOptions.model && !/^llama-3\.3-70b-versatile$/i.test(String(callOptions.model))) {
+        console.log('NORMALIZING MODEL FOR GROQ:', callOptions.model, '->', 'llama-3.3-70b-versatile');
+        callOptions.model = 'llama-3.3-70b-versatile';
+      }
+
+      console.log('TRYING PROVIDER:', providerName, 'model:', callOptions.model, 'requestId:', requestId);
       const result = await provider.generate(normalized.prompt, callOptions);
+      result.fallbackUsed = fallbackTriggered;
+
+      const duration = Date.now() - start;
+      console.log('PROVIDER SUCCESS:', providerName, 'requestId:', requestId, 'latencyMs:', duration, 'tokens:', result.totalTokens);
 
       recordSuccess(providerName);
       recordUsage(providerName, result.totalTokens);
@@ -193,7 +213,7 @@ export async function generateContent(
       logAIMetric({
         provider: providerName,
         model: result.model,
-        latencyMs: Date.now() - start,
+        latencyMs: duration,
         retries: 0,
         fallbackUsed: fallbackTriggered,
         tokenUsage: {
@@ -218,6 +238,7 @@ export async function generateContent(
         lastError = error;
       }
 
+      console.log('PROVIDER FAILED:', providerName, 'requestId:', requestId, 'errorCode:', lastError.code, 'message:', lastError.message);
       recordFailure(providerName);
       const shouldFallback = shouldFallbackOnError(lastError);
       logAIMetric({
@@ -232,18 +253,26 @@ export async function generateContent(
       });
 
       if (!shouldFallback || providerName === 'local') {
+        console.log('NO FALLBACK: stopping provider chain at', providerName, 'requestId:', requestId);
         break;
+      }
+
+      const nextProviderName = getNextProvider(providerName);
+      if (providerName === 'openai' && nextProviderName === 'groq') {
+        console.log('FALLING BACK TO GROQ', 'requestId:', requestId);
+        logger.info('Falling back to Groq', { requestId });
+      } else {
+        console.log('FALLING BACK TO NEXT PROVIDER:', nextProviderName, 'from', providerName, 'requestId:', requestId);
+        logger.info('Falling back to next provider', {
+          provider: providerName,
+          reason: lastError.code,
+          requestId,
+        });
       }
 
       fallbackTriggered = true;
       const fallbackMetrics = providerMetrics.get(providerName) ?? initializeProviderMetrics(providerName);
       fallbackMetrics.requests.fallbacks++;
-
-      logger.info('Falling back to next provider', {
-        provider: providerName,
-        reason: lastError.code,
-        requestId,
-      });
     }
   }
 

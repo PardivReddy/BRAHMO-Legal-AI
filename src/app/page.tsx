@@ -155,14 +155,13 @@ export default function Home() {
             onQueryChange={setQuery}
             onSubmit={handleGenerate}
           />
-          <IntegrationStatusPanel status={status} isLoading={isStatusLoading} />
+          <IntegrationStatusPanel
+            status={status}
+            isLoading={isStatusLoading}
+            providerUsed={result?.providerUsed ?? null}
+            providerFallback={result?.providerFallback ?? false}
+          />
         </section>
-
-        <div className="min-h-[120px]">
-          <AnimatePresence mode="wait">
-            {isLoading ? <PipelineLoading key="loading" /> : null}
-          </AnimatePresence>
-        </div>
 
         {(isLoading || result) && (
           <IKResearchPanel

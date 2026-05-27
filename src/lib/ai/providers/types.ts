@@ -1,4 +1,4 @@
-export type AIProviderName = 'gemini' | 'openai' | 'claude' | 'local';
+export type AIProviderName = 'gemini' | 'openai' | 'groq' | 'claude' | 'local';
 
 export interface GenerateOptions {
   model?: string;
@@ -16,6 +16,7 @@ export interface GenerateResult {
   outputTokens: number;
   totalTokens: number;
   degraded?: boolean;
+  fallbackUsed?: boolean;
 }
 
 export interface AIProvider {

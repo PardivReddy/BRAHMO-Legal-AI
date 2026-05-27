@@ -131,6 +131,8 @@ export async function POST(request: Request): Promise<Response> {
       tokenUsage: tokens,
       intelligence,
       pipelineSignals: buildPipelineSignals(template, knowledge, ikResearch),
+      providerUsed: level3.provider ?? level2.provider ?? level1.provider ?? null,
+      providerFallback: level3.fallbackUsed ?? level2.fallbackUsed ?? level1.fallbackUsed ?? false,
       outputs: {
         level1: normalized.responses.level1.content,
         level2: normalized.responses.level2.content,

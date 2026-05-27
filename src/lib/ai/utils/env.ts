@@ -3,6 +3,7 @@ import type { AIProviderName } from '@/lib/ai/providers/types';
 export interface AIEnvConfig {
   geminiApiKey?: string;
   openAIApiKey?: string;
+  groqApiKey?: string;
   claudeApiKey?: string;
   openAIModelChain: readonly string[];
   claudeModelChain: readonly string[];
@@ -22,6 +23,7 @@ const DEFAULT_CLAUDE_MODEL_CHAIN = ['claude-3.5', 'claude-3'] as const;
 export const AI_CONFIG: AIEnvConfig = {
   geminiApiKey: process.env.GEMINI_API_KEY ?? process.env.GOOGLE_GENERATIVE_AI_API_KEY,
   openAIApiKey: process.env.OPENAI_API_KEY,
+  groqApiKey: process.env.GROQ_API_KEY,
   claudeApiKey: process.env.CLAUDE_API_KEY,
   openAIModelChain: DEFAULT_OPENAI_MODEL_CHAIN,
   claudeModelChain: DEFAULT_CLAUDE_MODEL_CHAIN,
@@ -44,6 +46,7 @@ export const ENV_SCHEMA_DESCRIPTION = {
   GEMINI_API_KEY: 'Google Gemini API key for Gemini provider.',
   GOOGLE_GENERATIVE_AI_API_KEY: 'Alternative Google Gemini key name.',
   OPENAI_API_KEY: 'OpenAI API key for fallback provider.',
+  GROQ_API_KEY: 'Groq API key for fallback provider.',
   CLAUDE_API_KEY: 'Anthropic Claude API key for fallback provider.',
   AI_MAX_DAILY_REQUESTS: 'Maximum total AI requests per day across all providers.',
   AI_MAX_DAILY_TOKENS: 'Maximum total AI tokens per day across all providers.',
@@ -59,6 +62,7 @@ export function getProviderEnvStatus(): Record<AIProviderName, boolean> {
   return {
     gemini: Boolean(AI_CONFIG.geminiApiKey),
     openai: Boolean(AI_CONFIG.openAIApiKey),
+    groq: Boolean(AI_CONFIG.groqApiKey),
     claude: Boolean(AI_CONFIG.claudeApiKey),
     local: false,
   };

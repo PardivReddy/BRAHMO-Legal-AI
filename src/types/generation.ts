@@ -71,6 +71,8 @@ export interface GenerateResponse {
     authoritiesUsed: string[];
   };
   pipelineSignals: PipelineTrustSignals;
+  providerUsed?: string;
+  providerFallback?: boolean;
 }
 
 export interface EnvCheckView {
@@ -91,8 +93,9 @@ export interface IntegrationStatus {
   env: EnvCheckView[];
   gemini: {
     configured: boolean;
-    model: string;
+    model?: string;
     envName?: string;
+    providers?: Record<string, boolean>;
   };
   supabase: {
     configured: boolean;
