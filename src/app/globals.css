@@ -177,3 +177,34 @@ body::before {
   outline: none;
   box-shadow: 0 0 0 1px var(--border-subtle), 0 0 0 3px rgba(255, 255, 255, 0.06);
 }
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+  }
+
+  body * {
+    background: transparent !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .no-print,
+  .premium-scrollbar,
+  .sticky,
+  .backdrop-blur-md {
+    display: none !important;
+  }
+
+  .legal-draft {
+    color: #111;
+    background: transparent !important;
+  }
+
+  a {
+    color: #111 !important;
+    text-decoration: underline !important;
+  }
+}

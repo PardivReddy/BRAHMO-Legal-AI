@@ -1,10 +1,11 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { IntelligenceScore } from '@/lib/intelligence-score';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 import type { DraftTokenUsage, PipelineTrustSignals } from '@/types/generation';
+import { copyToClipboard, downloadAsText, printSection } from '@/lib/export-utils';
 
 export type { DraftTokenUsage };
 
@@ -93,6 +94,11 @@ const DraftCard = memo(function DraftCard({ level, index }: { level: DraftLevel;
         {isStrong && level.trustSignals ? (
           <TrustSignalsRow signals={level.trustSignals} className="mt-4" />
         ) : null}
+        <ExportButtonRow
+          outputText={level.output}
+          label={`L${index + 1} ${level.title}`}
+          className="mt-4"
+        />
       </div>
 
       <div className="border-b border-[rgba(255,255,255,0.06)] px-5 py-3">
@@ -233,6 +239,96 @@ function IntelligenceSummary({
         {overall > 0 ? overall : '—'}
       </div>
       <div className="text-[10px] uppercase tracking-wider text-[#71717a]">Index</div>
+    </div>
+  );
+}
+
+function ExportButtonRow({
+  outputText,
+  label,
+  className,
+}: {
+  outputText?: string;
+  label: string;
+  className?: string;
+}) {
+  const [status, setStatus] = useState<string | null>(null);
+  const [isBusy, setIsBusy] = useState(false);
+  const trimmedOutput = outputText?.trim() ?? '';
+  const filename = `${label.replace(/[^a-zA-Z0-9-_ ]/g, '').replace(/\s+/g, '-')}.txt`;
+
+  const clearStatus = useCallback(() => {
+    window.setTimeout(() => setStatus(null), 2800);
+  }, []);
+
+  const handleCopy = useCallback(async () => {
+    if (!trimmedOutput) {
+      setStatus('No draft available to copy.');
+      clearStatus();
+      return;
+    }
+
+    try {
+      setIsBusy(true);
+      await copyToClipboard(trimmedOutput);
+      setStatus('Copied to clipboard');
+    } catch {
+      setStatus('Copy failed');
+    } finally {
+      setIsBusy(false);
+      clearStatus();
+    }
+  }, [trimmedOutput, clearStatus]);
+
+  const handleDownload = useCallback(() => {
+    if (!trimmedOutput) {
+      setStatus('No draft available to download.');
+      clearStatus();
+      return;
+    }
+
+    downloadAsText(filename, trimmedOutput);
+    setStatus('Download ready');
+    clearStatus();
+  }, [filename, trimmedOutput, clearStatus]);
+
+  const handlePrint = useCallback(() => {
+    printSection();
+    setStatus('Ready to print');
+    clearStatus();
+  }, [clearStatus]);
+
+  return (
+    <div className={`flex flex-wrap items-center justify-between gap-3 ${className ?? ''}`}>
+      <div className="text-xs text-[#a1a1aa]">
+        <span className="font-semibold text-[#f5f5f5]">Export</span>
+        {status ? <span className="ml-2 text-[#a1a1aa]">• {status}</span> : null}
+      </div>
+      <div className="flex flex-wrap gap-2 no-print">
+        <button
+          type="button"
+          disabled={!trimmedOutput || isBusy}
+          className="rounded-full border border-[rgba(255,255,255,0.08)] bg-[#0d0d0f] px-3 py-2 text-xs font-medium text-[#f5f5f5] transition hover:border-[rgba(255,255,255,0.16)] disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={handleCopy}
+        >
+          Copy
+        </button>
+        <button
+          type="button"
+          disabled={!trimmedOutput}
+          className="rounded-full border border-[rgba(255,255,255,0.08)] bg-[#0d0d0f] px-3 py-2 text-xs font-medium text-[#f5f5f5] transition hover:border-[rgba(255,255,255,0.16)] disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={handleDownload}
+        >
+          Download
+        </button>
+        <button
+          type="button"
+          className="rounded-full border border-[rgba(255,255,255,0.08)] bg-[#0d0d0f] px-3 py-2 text-xs font-medium text-[#f5f5f5] transition hover:border-[rgba(255,255,255,0.16)]"
+          onClick={handlePrint}
+        >
+          Print
+        </button>
+      </div>
     </div>
   );
 }
